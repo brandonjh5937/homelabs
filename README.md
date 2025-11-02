@@ -131,8 +131,10 @@ vagrant ssh worker3
 - **[CLUSTER-INFO.md](docs/CLUSTER-INFO.md)** - Quick reference and access information
 - **[LOKI-GUIDE.md](docs/LOKI-GUIDE.md)** - Log collection and querying guide
 - **[NFS-STORAGE-GUIDE.md](docs/NFS-STORAGE-GUIDE.md)** - Shared persistent storage guide
+- **[CLOUDFLARE-TUNNEL-SETUP.md](docs/CLOUDFLARE-TUNNEL-SETUP.md)** - Cloudflare Tunnel configuration guide
 - **[GIT-QUICK-REFERENCE.md](docs/GIT-QUICK-REFERENCE.md)** - Git commands reference
 - **[.gitignore-README.md](docs/.gitignore-README.md)** - .gitignore guide and best practices
+- **[terraform/README.md](terraform/README.md)** - Terraform infrastructure documentation
 
 ## Testing Connectivity
 
@@ -288,6 +290,60 @@ kubectl delete -f examples/nfs-test-deployment.yaml
 - **nfs-loki** - Reserved for Loki (if needed)
 
 See **[NFS-STORAGE-GUIDE.md](docs/NFS-STORAGE-GUIDE.md)** for complete documentation.
+
+## Terraform Infrastructure
+
+Manage Kubernetes deployments declaratively with Terraform.
+
+### Deployed Static Sites
+
+Three nginx-based static websites managed by Terraform:
+
+```bash
+# View deployment status
+cd terraform
+terraform output
+
+# Sites:
+- pudim.dev           (2 replicas, NFS storage)
+- luismachadoreis.dev (2 replicas, NFS storage)
+- carimbo.vip         (2 replicas, NFS storage)
+```
+
+### Quick Commands
+
+```bash
+# Check deployment status
+kubectl get all -n static-sites
+
+# View deployed sites
+kubectl get deployments -n static-sites
+
+# Update site content (via NFS)
+ssh root@192.168.5.200
+cd /nfs/shared/static-sites-pudim-dev-content-*/
+# Edit your HTML files here
+
+# Or use helper script
+./scripts/terraform-helper.sh status
+```
+
+### Adding Cloudflare Tunnel
+
+To expose sites publicly:
+
+1. Get tunnel token from [Cloudflare Dashboard](https://one.dash.cloudflare.com/)
+2. Update `terraform/terraform.tfvars`:
+   ```hcl
+   cloudflare_tunnel_token = "your-token-here"
+   ```
+3. Apply changes:
+   ```bash
+   cd terraform
+   terraform apply
+   ```
+
+See **[CLOUDFLARE-TUNNEL-SETUP.md](docs/CLOUDFLARE-TUNNEL-SETUP.md)** and **[terraform/README.md](terraform/README.md)** for detailed guides.
 
 ## Next Steps
 
