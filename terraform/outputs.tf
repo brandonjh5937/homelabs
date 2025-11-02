@@ -1,41 +1,46 @@
 output "namespaces" {
   description = "The namespaces for each domain"
   value = {
-    pudim_dev           = kubernetes_namespace.pudim_dev.metadata[0].name
-    luismachadoreis_dev = kubernetes_namespace.luismachadoreis_dev.metadata[0].name
-    carimbo_vip         = kubernetes_namespace.carimbo_vip.metadata[0].name
+    pudim_dev           = module.pudim_dev.namespace
+    luismachadoreis_dev = module.luismachadoreis_dev.namespace
+    carimbo_vip         = module.carimbo_vip.namespace
   }
 }
 
-output "pudim_dev_service" {
-  description = "Service name for pudim.dev"
-  value       = module.pudim_dev.service_name
+output "pudim_dev" {
+  description = "pudim.dev domain outputs"
+  value = {
+    namespace   = module.pudim_dev.namespace
+    service     = module.pudim_dev.service_name
+    url         = module.pudim_dev.site_url
+    tunnel      = module.pudim_dev.cloudflare_tunnel_deployed
+  }
 }
 
-output "luismachadoreis_dev_service" {
-  description = "Service name for luismachadoreis.dev"
-  value       = module.luismachadoreis_dev.service_name
+output "luismachadoreis_dev" {
+  description = "luismachadoreis.dev domain outputs"
+  value = {
+    namespace = module.luismachadoreis_dev.namespace
+    service   = module.luismachadoreis_dev.service_name
+    url       = module.luismachadoreis_dev.site_url
+  }
 }
 
-output "carimbo_vip_service" {
-  description = "Service name for carimbo.vip"
-  value       = module.carimbo_vip.service_name
-}
-
-output "cloudflare_tunnel_info" {
-  description = "Cloudflare Tunnel deployment information"
-  value = length(module.cloudflare_tunnel) > 0 ? {
-    namespace = module.cloudflare_tunnel[0].namespace
-    service   = module.cloudflare_tunnel[0].service_name
-  } : null
+output "carimbo_vip" {
+  description = "carimbo.vip domain outputs"
+  value = {
+    namespace = module.carimbo_vip.namespace
+    service   = module.carimbo_vip.service_name
+    url       = module.carimbo_vip.site_url
+  }
 }
 
 output "sites_urls" {
   description = "URLs for all deployed sites"
   value = {
-    pudim_dev           = "https://pudim.dev"
-    luismachadoreis_dev = "https://luismachadoreis.dev"
-    carimbo_vip         = "https://carimbo.vip"
+    pudim_dev           = module.pudim_dev.site_url
+    luismachadoreis_dev = module.luismachadoreis_dev.site_url
+    carimbo_vip         = module.carimbo_vip.site_url
   }
 }
 
