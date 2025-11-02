@@ -26,15 +26,24 @@ homelabs/
 │   ├── CLUSTER-INFO.md         ← Quick reference & access info
 │   ├── SETUP-GUIDE.md          ← Complete setup tutorial
 │   ├── LOKI-GUIDE.md           ← Log collection guide
+│   ├── NFS-STORAGE-GUIDE.md    ← NFS shared storage guide
 │   ├── GIT-QUICK-REFERENCE.md  ← Git commands reference
 │   └── .gitignore-README.md    ← .gitignore guide
-└── scripts/                     ← Installation & helper scripts
-    ├── setup-cluster.sh         ← Automated cluster setup
-    ├── install-k3s-master.sh    ← Master node installation
-    ├── install-k3s-worker.sh    ← Worker node installation
-    ├── install-observability.sh ← Monitoring stack installation
-    ├── verify-cluster.sh        ← Cluster health check
-    └── ssh-nodes.sh             ← SSH helper
+├── scripts/                     ← Installation & helper scripts
+│   ├── setup-cluster.sh         ← Automated cluster setup
+│   ├── install-k3s-master.sh    ← Master node installation
+│   ├── install-k3s-worker.sh    ← Worker node installation
+│   ├── install-observability.sh ← Monitoring stack installation
+│   ├── setup-nfs-complete.sh    ← Complete NFS setup
+│   ├── setup-nfs-server.sh      ← NFS server setup
+│   ├── setup-nfs-clients.sh     ← NFS client setup
+│   ├── deploy-nfs-provisioner.sh ← NFS CSI provisioner
+│   ├── verify-cluster.sh        ← Cluster health check
+│   └── ssh-nodes.sh             ← SSH helper
+└── examples/                    ← Example manifests
+    ├── nfs-test-deployment.yaml ← NFS test example
+    ├── nfs-nginx-deployment.yaml ← Nginx with NFS
+    └── nfs-statefulset.yaml     ← StatefulSet with NFS
 ```
 
 ## Quick Start
@@ -111,12 +120,17 @@ vagrant ssh worker3
 - ✅ Essential tools installed: curl, jq, net-tools, gnupg
 - ✅ Custom DNS configuration
 - ✅ Promiscuous mode enabled for networking
+- ✅ NFS shared storage (master node as NFS server)
+  - Dynamic volume provisioning
+  - ReadWriteMany support
+  - Persistent storage for applications
 
 ## Documentation
 
 - **[SETUP-GUIDE.md](docs/SETUP-GUIDE.md)** - Complete step-by-step setup tutorial (1,446 lines)
 - **[CLUSTER-INFO.md](docs/CLUSTER-INFO.md)** - Quick reference and access information
 - **[LOKI-GUIDE.md](docs/LOKI-GUIDE.md)** - Log collection and querying guide
+- **[NFS-STORAGE-GUIDE.md](docs/NFS-STORAGE-GUIDE.md)** - Shared persistent storage guide
 - **[GIT-QUICK-REFERENCE.md](docs/GIT-QUICK-REFERENCE.md)** - Git commands reference
 - **[.gitignore-README.md](docs/.gitignore-README.md)** - .gitignore guide and best practices
 
@@ -216,6 +230,64 @@ kubectl get all -n monitoring
 # Access Grafana logs
 kubectl logs -n monitoring -l app.kubernetes.io/name=grafana -f
 ```
+
+## NFS Shared Storage
+
+The master node provides NFS shared storage for persistent volumes across all worker nodes.
+
+### Setup NFS
+
+```bash
+# Automated setup (recommended)
+./scripts/setup-nfs-complete.sh
+```
+
+This will:
+1. Configure master node as NFS server
+2. Install NFS clients on all workers
+3. Deploy NFS CSI driver for dynamic provisioning
+4. Create StorageClasses for your applications
+
+### Using NFS Storage
+
+Create a PersistentVolumeClaim:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-app-storage
+spec:
+  accessModes:
+    - ReadWriteMany  # Shared access across pods
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs-client  # Default NFS storage
+```
+
+### Test NFS
+
+```bash
+# Deploy test pods
+kubectl apply -f examples/nfs-test-deployment.yaml
+
+# Check if data is shared
+kubectl logs nfs-writer
+kubectl logs nfs-reader
+
+# Cleanup
+kubectl delete -f examples/nfs-test-deployment.yaml
+```
+
+### Available Storage Classes
+
+- **nfs-client** (default) - General purpose shared storage
+- **nfs-grafana** - Reserved for Grafana (if needed)
+- **nfs-prometheus** - Reserved for Prometheus (if needed)
+- **nfs-loki** - Reserved for Loki (if needed)
+
+See **[NFS-STORAGE-GUIDE.md](docs/NFS-STORAGE-GUIDE.md)** for complete documentation.
 
 ## Next Steps
 
