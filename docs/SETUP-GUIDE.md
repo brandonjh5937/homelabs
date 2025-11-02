@@ -435,10 +435,10 @@ vagrant
 
 ### 5.3: Create SSH Helper Script
 
-Create `ssh-nodes.sh`:
+Create `scripts/ssh-nodes.sh`:
 
 ```bash
-cat > ~/homelabs/ssh-nodes.sh << 'EOF'
+cat > ~/homelabs/scripts/ssh-nodes.sh << 'EOF'
 #!/bin/bash
 # Quick SSH helper for homelabs cluster nodes
 
@@ -462,12 +462,12 @@ case "$1" in
 esac
 EOF
 
-chmod +x ~/homelabs/ssh-nodes.sh
+chmod +x ~/homelabs/scripts/ssh-nodes.sh
 ```
 
 **Test it**:
 ```bash
-./ssh-nodes.sh master
+./scripts/ssh-nodes.sh master
 # You should be logged into the master node
 exit
 ```
@@ -478,10 +478,10 @@ exit
 
 ### 6.1: Create k3s Master Installation Script
 
-Create `install-k3s-master.sh`:
+Create `scripts/install-k3s-master.sh`:
 
 ```bash
-cat > ~/homelabs/install-k3s-master.sh << 'EOF'
+cat > ~/homelabs/scripts/install-k3s-master.sh << 'EOF'
 #!/bin/bash
 # Install k3s master node with observability stack
 
@@ -512,15 +512,15 @@ echo ""
 echo "Kubeconfig is available at: /etc/rancher/k3s/k3s.yaml"
 EOF
 
-chmod +x ~/homelabs/install-k3s-master.sh
+chmod +x ~/homelabs/scripts/install-k3s-master.sh
 ```
 
 ### 6.2: Create k3s Worker Installation Script
 
-Create `install-k3s-worker.sh`:
+Create `scripts/install-k3s-worker.sh`:
 
 ```bash
-cat > ~/homelabs/install-k3s-worker.sh << 'EOF'
+cat > ~/homelabs/scripts/install-k3s-worker.sh << 'EOF'
 #!/bin/bash
 # Install k3s worker node
 
@@ -547,7 +547,7 @@ curl -sfL https://get.k3s.io | K3S_URL="https://${MASTER_IP}:6443" \
 echo "=== k3s worker installed successfully ==="
 EOF
 
-chmod +x ~/homelabs/install-k3s-worker.sh
+chmod +x ~/homelabs/scripts/install-k3s-worker.sh
 ```
 
 ### 6.3: Install k3s on Master Node
@@ -556,10 +556,10 @@ chmod +x ~/homelabs/install-k3s-worker.sh
 cd ~/homelabs
 
 # Copy script to master
-scp install-k3s-master.sh root@192.168.5.200:/tmp/
+scp scripts/install-k3s-master.sh root@192.168.5.200:/tmp/
 
 # Execute installation
-ssh root@192.168.5.200 'bash /tmp/install-k3s-master.sh'
+ssh root@192.168.5.200 'bash /tmp/scripts/install-k3s-master.sh'
 ```
 
 **This takes 1-2 minutes**. You'll see:
@@ -589,8 +589,8 @@ echo "Node Token: $NODE_TOKEN"
 # Install on all workers simultaneously
 for ip in 192.168.5.201 192.168.5.202 192.168.5.203; do
   echo "Installing on $ip..."
-  scp install-k3s-worker.sh root@$ip:/tmp/
-  ssh root@$ip "bash /tmp/install-k3s-worker.sh 192.168.5.200 $NODE_TOKEN" &
+  scp scripts/install-k3s-worker.sh root@$ip:/tmp/
+  ssh root@$ip "bash /tmp/scripts/install-k3s-worker.sh 192.168.5.200 $NODE_TOKEN" &
 done
 
 # Wait for all to complete
@@ -641,10 +641,10 @@ worker3   Ready    <none>                 1m    v1.33.5+k3s1   192.168.5.203   1
 
 ### 7.1: Create Observability Installation Script
 
-Create `install-observability.sh`:
+Create `scripts/install-observability.sh`:
 
 ```bash
-cat > ~/homelabs/install-observability.sh << 'EOF'
+cat > ~/homelabs/scripts/install-observability.sh << 'EOF'
 #!/bin/bash
 # Install observability stack: Prometheus, Grafana, Loki
 
@@ -740,7 +740,7 @@ echo "  Alertmanager:  http://192.168.5.200:30093"
 echo ""
 EOF
 
-chmod +x ~/homelabs/install-observability.sh
+chmod +x ~/homelabs/scripts/install-observability.sh
 ```
 
 ### 7.2: Install Observability Stack
@@ -749,10 +749,10 @@ chmod +x ~/homelabs/install-observability.sh
 cd ~/homelabs
 
 # Copy script to master
-scp install-observability.sh root@192.168.5.200:/tmp/
+scp scripts/install-observability.sh root@192.168.5.200:/tmp/
 
 # Execute installation (this takes 5-10 minutes)
-ssh root@192.168.5.200 'bash /tmp/install-observability.sh'
+ssh root@192.168.5.200 'bash /tmp/scripts/install-observability.sh'
 ```
 
 **What happens**:
@@ -801,10 +801,10 @@ prometheus-kube-prometheus-stack-prometheus-0               2/2     Running   0 
 
 ### 8.1: Create Verification Script
 
-Create `verify-cluster.sh`:
+Create `scripts/verify-cluster.sh`:
 
 ```bash
-cat > ~/homelabs/verify-cluster.sh << 'EOF'
+cat > ~/homelabs/scripts/verify-cluster.sh << 'EOF'
 #!/bin/bash
 # Verify k3s cluster and observability stack
 
@@ -879,14 +879,14 @@ echo "   Username: admin | Password: admin"
 echo ""
 EOF
 
-chmod +x ~/homelabs/verify-cluster.sh
+chmod +x ~/homelabs/scripts/verify-cluster.sh
 ```
 
 ### 8.2: Run Verification
 
 ```bash
 cd ~/homelabs
-./verify-cluster.sh
+./scripts/verify-cluster.sh
 ```
 
 **Expected output**: All checks should show ✓ (green checkmarks).
@@ -1141,7 +1141,7 @@ sleep 30
 
 # Verify
 kubectl get nodes
-./verify-cluster.sh
+./scripts/verify-cluster.sh
 ```
 
 ### Stopping the Cluster
@@ -1161,7 +1161,7 @@ vagrant halt worker1
 
 ```bash
 # Via helper script
-./ssh-nodes.sh master
+./scripts/ssh-nodes.sh master
 
 # Via direct SSH
 ssh vagrant@192.168.5.200
@@ -1285,7 +1285,7 @@ vagrant destroy -f
 vagrant up
 
 # Reinstall k3s
-./setup-cluster.sh  # If you created the automated script
+./scripts/setup-cluster.sh  # If you created the automated script
 # Or follow steps 6 and 7 manually
 ```
 

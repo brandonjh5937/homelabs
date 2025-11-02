@@ -122,10 +122,10 @@ ssh root@192.168.5.200     # master (root)
 ### Helper Script
 
 ```bash
-./ssh-nodes.sh master   # Quick SSH to master
-./ssh-nodes.sh w1       # Quick SSH to worker1
-./ssh-nodes.sh w2       # Quick SSH to worker2
-./ssh-nodes.sh w3       # Quick SSH to worker3
+./scripts/ssh-nodes.sh master   # Quick SSH to master
+./scripts/ssh-nodes.sh w1       # Quick SSH to worker1
+./scripts/ssh-nodes.sh w2       # Quick SSH to worker2
+./scripts/ssh-nodes.sh w3       # Quick SSH to worker3
 ```
 
 ## 📈 Monitoring Examples

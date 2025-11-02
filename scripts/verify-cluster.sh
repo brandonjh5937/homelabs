@@ -65,7 +65,7 @@ if kubectl get namespace monitoring &>/dev/null; then
     fi
 else
     echo -e "  ${cross_mark} Monitoring namespace NOT found"
-    echo "  Run: ./install-observability.sh"
+    echo "  Run: ./scripts/install-observability.sh"
 fi
 
 # Check services
@@ -126,6 +126,6 @@ echo "   kubectl get nodes              # View cluster nodes"
 echo "   kubectl get pods -A            # View all pods"
 echo "   kubectl get pods -n monitoring # View monitoring stack"
 echo ""
-echo "📖 Full documentation: ./CLUSTER-INFO.md"
+echo "📖 Full documentation: ./docs/CLUSTER-INFO.md"
 echo ""
 

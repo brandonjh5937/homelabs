@@ -16,6 +16,27 @@ A Vagrant-managed 4-node Debian Bookworm cluster with bridged networking on a /2
 **DNS**: 8.8.8.8, 8.8.4.4  
 **Bridge Interface**: en2: Wi-Fi (AirPort)
 
+## Project Structure
+
+```
+homelabs/
+├── README.md                    ← You are here
+├── Vagrantfile                  ← VM configuration
+├── docs/                        ← Documentation
+│   ├── CLUSTER-INFO.md         ← Quick reference & access info
+│   ├── SETUP-GUIDE.md          ← Complete setup tutorial
+│   ├── LOKI-GUIDE.md           ← Log collection guide
+│   ├── GIT-QUICK-REFERENCE.md  ← Git commands reference
+│   └── .gitignore-README.md    ← .gitignore guide
+└── scripts/                     ← Installation & helper scripts
+    ├── setup-cluster.sh         ← Automated cluster setup
+    ├── install-k3s-master.sh    ← Master node installation
+    ├── install-k3s-worker.sh    ← Worker node installation
+    ├── install-observability.sh ← Monitoring stack installation
+    ├── verify-cluster.sh        ← Cluster health check
+    └── ssh-nodes.sh             ← SSH helper
+```
+
 ## Quick Start
 
 ### Vagrant Commands
@@ -62,10 +83,10 @@ ssh root@192.168.5.201     # worker1 (root)
 
 ```bash
 # Quick access using the helper script
-./ssh-nodes.sh master   # or: ./ssh-nodes.sh m
-./ssh-nodes.sh worker1  # or: ./ssh-nodes.sh w1
-./ssh-nodes.sh worker2  # or: ./ssh-nodes.sh w2
-./ssh-nodes.sh worker3  # or: ./ssh-nodes.sh w3
+./scripts/ssh-nodes.sh master   # or: ./scripts/ssh-nodes.sh m
+./scripts/ssh-nodes.sh worker1  # or: ./scripts/ssh-nodes.sh w1
+./scripts/ssh-nodes.sh worker2  # or: ./scripts/ssh-nodes.sh w2
+./scripts/ssh-nodes.sh worker3  # or: ./scripts/ssh-nodes.sh w3
 ```
 
 #### Via Vagrant
@@ -91,6 +112,14 @@ vagrant ssh worker3
 - ✅ Custom DNS configuration
 - ✅ Promiscuous mode enabled for networking
 
+## Documentation
+
+- **[SETUP-GUIDE.md](docs/SETUP-GUIDE.md)** - Complete step-by-step setup tutorial (1,446 lines)
+- **[CLUSTER-INFO.md](docs/CLUSTER-INFO.md)** - Quick reference and access information
+- **[LOKI-GUIDE.md](docs/LOKI-GUIDE.md)** - Log collection and querying guide
+- **[GIT-QUICK-REFERENCE.md](docs/GIT-QUICK-REFERENCE.md)** - Git commands reference
+- **[.gitignore-README.md](docs/.gitignore-README.md)** - .gitignore guide and best practices
+
 ## Testing Connectivity
 
 ```bash
@@ -110,7 +139,7 @@ done
 Run the automated setup script to install k3s with full observability:
 
 ```bash
-./setup-cluster.sh
+./scripts/setup-cluster.sh
 ```
 
 This will:
@@ -125,15 +154,15 @@ If you prefer manual control:
 
 ```bash
 # 1. Install k3s master
-ssh root@192.168.5.200 < install-k3s-master.sh
+ssh root@192.168.5.200 < scripts/install-k3s-master.sh
 
 # 2. Get the node token
 NODE_TOKEN=$(ssh root@192.168.5.200 'cat /var/lib/rancher/k3s/server/node-token')
 
 # 3. Install workers
-ssh root@192.168.5.201 "bash -s -- 192.168.5.200 $NODE_TOKEN" < install-k3s-worker.sh
-ssh root@192.168.5.202 "bash -s -- 192.168.5.200 $NODE_TOKEN" < install-k3s-worker.sh
-ssh root@192.168.5.203 "bash -s -- 192.168.5.200 $NODE_TOKEN" < install-k3s-worker.sh
+ssh root@192.168.5.201 "bash -s -- 192.168.5.200 $NODE_TOKEN" < scripts/install-k3s-worker.sh
+ssh root@192.168.5.202 "bash -s -- 192.168.5.200 $NODE_TOKEN" < scripts/install-k3s-worker.sh
+ssh root@192.168.5.203 "bash -s -- 192.168.5.200 $NODE_TOKEN" < scripts/install-k3s-worker.sh
 
 # 4. Copy kubeconfig
 ssh root@192.168.5.200 'cat /etc/rancher/k3s/k3s.yaml' | \
@@ -141,7 +170,7 @@ ssh root@192.168.5.200 'cat /etc/rancher/k3s/k3s.yaml' | \
 export KUBECONFIG=~/.kube/config-homelabs
 
 # 5. Install observability stack
-scp install-observability.sh root@192.168.5.200:/tmp/
+scp scripts/install-observability.sh root@192.168.5.200:/tmp/
 ssh root@192.168.5.200 'bash /tmp/install-observability.sh'
 ```
 

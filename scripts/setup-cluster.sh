@@ -15,7 +15,7 @@ WORKER_NAMES=("worker1" "worker2" "worker3")
 
 # Step 1: Install k3s on master
 echo "[1/4] Installing k3s on master node..."
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${MASTER_IP} 'bash -s' < install-k3s-master.sh
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${MASTER_IP} 'bash -s' < scripts/install-k3s-master.sh
 
 # Get the node token
 echo ""
@@ -33,7 +33,7 @@ for i in "${!WORKER_IPS[@]}"; do
   WORKER_IP="${WORKER_IPS[$i]}"
   WORKER_NAME="${WORKER_NAMES[$i]}"
   echo "  -> Installing on ${WORKER_NAME} (${WORKER_IP})..."
-  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${WORKER_IP} "bash -s -- ${MASTER_IP} ${NODE_TOKEN}" < install-k3s-worker.sh &
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${WORKER_IP} "bash -s -- ${MASTER_IP} ${NODE_TOKEN}" < scripts/install-k3s-worker.sh &
 done
 
 # Wait for all worker installations to complete
@@ -74,7 +74,7 @@ echo
 if [[ ! $REPLY =~ ^[Nn]$ ]]; then
   echo ""
   echo "Installing observability stack on master node..."
-  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null install-observability.sh root@${MASTER_IP}:/tmp/
+  scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null scripts/install-observability.sh root@${MASTER_IP}:/tmp/
   ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${MASTER_IP} 'bash /tmp/install-observability.sh'
 fi
 

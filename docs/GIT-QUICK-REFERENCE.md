@@ -185,7 +185,8 @@ git push --force-with-lease origin main
 ### Safe Files to Commit
 ```bash
 git add Vagrantfile
-git add *.sh
+git add scripts/*.sh
+git add docs/*.md
 git add *.md
 git add .gitignore
 ```
@@ -207,13 +208,13 @@ secrets.yaml
 ### Update Scripts
 ```bash
 # Edit a script
-nano setup-cluster.sh
+nano scripts/setup-cluster.sh
 
 # Test it
-./setup-cluster.sh
+./scripts/setup-cluster.sh
 
 # Commit changes
-git add setup-cluster.sh
+git add scripts/setup-cluster.sh
 git commit -m "Update cluster setup script"
 git push
 ```
