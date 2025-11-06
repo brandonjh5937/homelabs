@@ -81,6 +81,13 @@ EOF
         systemctl restart systemd-resolved || true
       SHELL
 
+      # Ensure k3s uses the bridged NIC (eth1) for flannel on all nodes
+      vm.vm.provision "shell", privileged: true, inline: <<-SHELL
+        set -euo pipefail
+        mkdir -p /etc/rancher/k3s
+        printf "flannel-iface: eth1\n" > /etc/rancher/k3s/config.yaml
+      SHELL
+
       # Copy your SSH public key for direct SSH access
       ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip rescue nil
       ssh_pub_key ||= File.readlines("#{Dir.home}/.ssh/id_ed25519.pub").first.strip rescue nil
